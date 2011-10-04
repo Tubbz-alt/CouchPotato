@@ -17,7 +17,7 @@ log = CPLog(__name__)
 
 class Updater(rss, SimplePlugin):
 
-    git = 'git://github.com/RuudBurger/CouchPotato.git'
+    git = 'git@github.com:gboudreau/CouchPotato.git'
     url = 'https://github.com/RuudBurger/CouchPotato/tarball/master'
     downloads = 'https://github.com/RuudBurger/CouchPotato/downloads'
     timeout = 10
