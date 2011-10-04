@@ -18,7 +18,7 @@ log = CPLog(__name__)
 class Updater(rss, SimplePlugin):
 
     git = 'git@github.com:gboudreau/CouchPotato.git'
-    url = 'https://github.com/RuudBurger/CouchPotato/tarball/master'
+    url = 'https://github.com/gboudreau/CouchPotato/tarball/master'
     downloads = 'https://github.com/RuudBurger/CouchPotato/downloads'
     timeout = 10
     running = False
@@ -134,7 +134,7 @@ class Updater(rss, SimplePlugin):
             self.updateAvailable = self.checkForUpdateWindows()
         else:
             update = self.checkGitHubForUpdate()
-            latest_commit = update.get('name').replace('RuudBurger-CouchPotato-', '').replace('.tar.gz', '')
+            latest_commit = update.get('name').replace('gboudreau-CouchPotato-', '').replace('.tar.gz', '')
 
             if self.hasGit() and self.isRepo():
                 self.updateAvailable = latest_commit not in self.version
