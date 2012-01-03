@@ -11,6 +11,7 @@ from app.lib.notifo import Notifo
 from app.lib.boxcar import Boxcar
 from app.lib.nma import NMA
 from app.lib.twitter import Twitter
+from app.lib.trakt import Trakt
 import cherrypy
 import json
 import sys
@@ -71,6 +72,10 @@ class ConfigController(BaseController):
               'Boxcar.enabled', 'Boxcar.onSnatch',
               'NMA.enable', 'NMA.onSnatch',
               'Twitter.enabled', 'Twitter.onSnatch',
+              'Trakt.notification_enabled',
+              'Trakt.watchlist_remove',
+              'Trakt.watchlist_enabled',
+              'Trakt.dontaddcollection',
               'Meta.enabled',
               'MovieETA.enabled',
               'Renamer.enabled', 'Renamer.trailerQuality', 'Renamer.cleanup',
@@ -174,7 +179,7 @@ class ConfigController(BaseController):
     def testBoxcar(self, **data):
 
         boxcar = Boxcar()
-        boxcar.test(data.get('Boxcar.username'), data.get('Boxcar.password'))
+        boxcar.test(data.get('Boxcar.username'))
 
         return ''
     
@@ -191,6 +196,14 @@ class ConfigController(BaseController):
         twitter = Twitter()
         twitter.test()
         return ''
+    
+    @cherrypy.expose
+    def testTrakt(self, **data):
+
+        trakt = Trakt()
+        result = trakt.test(data.get('Trakt.apikey'), data.get('Trakt.username'), data.get('Trakt.password'))
+
+        return str(result)
 
     @cherrypy.expose
     def twitterReqAuth(self):
@@ -198,6 +211,9 @@ class ConfigController(BaseController):
         twitter = Twitter()
         referer = cherrypy.request.headers.get('referer')
         auth_url = twitter.get_authorization(referer)
+        if not auth_url:
+          return ('Error making an oauth connection to Twitter.  Check your '
+                  'system time?  See the logs for a more detailed error.')
         return redirect(auth_url)
 
     @cherrypy.expose

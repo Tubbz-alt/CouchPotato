@@ -409,13 +409,24 @@
 				</div>
 			</fieldset>
 
-            <fieldset class="inlineLabels">
+            		<fieldset class="inlineLabels">
 				<h3>#alt.binaries.hdtv.x264@EFnet</h3>
 				<div class="ctrlHolder checkbox">
 					<label>Enable</label>
 					<input type="checkbox" name="x264.enabled" value="True" ${' checked="checked"' if config.get('x264','enabled') else''} />
 					<p class="formHint">
 						HD movies only
+					</p>
+				</div>
+			</fieldset>
+		
+			<fieldset class="inlineLabels" style="float: right!important;">	<!--Temp layout fix-->
+				<h3>MysterBin</h3>
+				<div class="ctrlHolder checkbox">
+					<label>Enable</label>
+					<input type="checkbox" name="mysterbin.enabled" value="True" ${' checked="checked"' if config.get('mysterbin','enabled') else''} />
+					<p class="formHint">
+						Web Search provider 
 					</p>
 				</div>
 			</fieldset>
@@ -661,15 +672,8 @@
 					</select>
 				</div>
 			</fieldset>
-			<fieldset class="inlineLabels">
-				<h3>Trakt Watchlist</h3>
-				<div class="ctrlHolder checkbox">
-					<label>Enable</label>
-					<input type="checkbox" name="Trakt.enabled" value="True" ${' checked="checked"' if config.get('Trakt', 'enabled') else ''} />
-					<p class="formHint">
-						This will add movies from your Trakt watchlist.
-					</p>
-				</div>
+			<fieldset class="inlineLabels" id="traktFieldset">
+				<h3>Trakt</h3>
                 <div class="ctrlHolder">
 					<label>Trakt Username</label>
 					<input type="text" name="Trakt.username" value="${config.get('Trakt','username')}" class="textInput large"/>
@@ -681,15 +685,32 @@
 					<label>Trakt Password</label>
 					<input type="password" name="Trakt.password" value="${config.get('Trakt', 'password')}" class="textInput large"/>
 					<p class="formHint">
-						Your Trakt Password, only needed if you protect your account
+						Your Trakt Password
 					</p>
 				</div>
 				<div class="ctrlHolder">
 					<label>Trakt API Key</label>
 					<input type="text" name="Trakt.apikey" value="${config.get('Trakt', 'apikey')}" class="textInput large"/>
 					<p class="formHint">
-						Your api key for trakt from http://trakt.tv/settings/api
+						Get your key at: <a href="http://trakt.tv/settings/api" onclick="window.open(this.href, '_blank'); return false;">http://trakt.tv/settings/api</a>
 					</p>
+				</div>
+                <div class="ctrlHolder checkbox">
+					<label>Grab movies from watchlist</label>
+					<input type="checkbox" name="Trakt.watchlist_enabled" value="True" ${' checked="checked"' if config.get('Trakt', 'watchlist_enabled') else ''} />
+					<p class="formHint">
+						This will add movies from your Trakt watchlist.
+					</p>
+				</div>
+                <div class="ctrlHolder checkbox">
+					<label>Ignore Movies in Trakt Collection</label>
+					<input type="checkbox" name="Trakt.dontaddcollection" value="True" ${' checked="checked"' if config.get('Trakt', 'dontaddcollection') else ''} />
+					<p class="formHint">
+						Don't add movies to CouchPotato from watchlist that are already in Trakt collection
+					</p>
+				</div>
+                <div class="ctrlHolder">
+					<a href="#traktTest" id="traktTest" class="testNotification">Send a message to Trakt, see if it works.</a>
 				</div>
 			</fieldset>
 			<fieldset class="inlineLabels">
@@ -749,10 +770,17 @@
 					<label>DB Path</label>
 					<input type="text" name="XBMC.dbpath" value="${config.get('XBMC', 'dbpath')}" autocomplete="off" class="textInput large"/>
 					<p class="formHint">
-						Used for checking if you already have a movie in you library, before adding it to your wanted list.
+						Used for checking if you already have a movie in your library, before adding it to your wanted list.
 						Example: C:\Users\Username\AppData\Roaming\XBMC\userdata\Database
 					</p>
 				</div>
+                                <div class="ctrlHolder checkbox">
+                                        <label>Use web API</label>
+                                        <input type="checkbox" name="XBMC.useWebAPIExistingCheck" value="True" ${' checked="checked"' if config.get('XBMC', 'useWebAPIExistingCheck') else ''} />
+                                        <p class="formHint">
+                                                Whether to use web API against XBMC hosts to check if you have a movie in your library before adding it to your wanted list.
+                                        </p>
+                                </div>
 			</fieldset>
 			<fieldset class="inlineLabels" id="nmjFieldset">
 				<h3>Networked Media Jukebox</h3>
@@ -938,10 +966,6 @@
 					<input type="text" name="Boxcar.username" value="${config.get('Boxcar', 'username')}" class="textInput large" />
 				</div>
 				<div class="ctrlHolder">
-					<label>Password</label>
-					<input type="text" name="Boxcar.password" value="${config.get('Boxcar', 'password')}" class="textInput large" />
-				</div>
-				<div class="ctrlHolder">
 					<a href="#boxcarTest" id="boxcarTest" class="testNotification">Send a message to Boxcar, see if it works.</a>
 				</div>
 			</fieldset>
@@ -1019,6 +1043,23 @@
                 <p class="ctrlHolder formHint">
                     This only works if CP is running on a Synology NAS.
 				</p>
+			</fieldset>
+			<fieldset class="inlineLabels" id="traktNotificationFieldset">
+				<h3>Trakt</h3>
+				<div class="ctrlHolder checkbox">
+					<label>Update library</label>
+					<input type="checkbox" name="Trakt.notification_enabled" value="True" ${' checked="checked"' if config.get('Trakt', 'notification_enabled') else ''} />
+					<p class="formHint">
+						Sends a notification and updates your Trakt library. You must fill out the username and password in the extras tab for this to work.
+					</p>
+				</div>
+				<div class="ctrlHolder checkbox">
+					<label>Remove from watchlist</label>
+					<input type="checkbox" name="Trakt.watchlist_remove" value="True" ${' checked="checked"' if config.get('Trakt', 'watchlist_remove') else ''} />
+					<p class="formHint">
+						Removes the downloaded movie from your Trakt watchlist.
+					</p>
+				</div>
 			</fieldset>
 		</div>
 		<div class="buttonHolder">
@@ -1137,7 +1178,7 @@
 	        }
 	    }
 		
-		Array.each(['renamingFieldset','torrentsFieldset','nzbsFieldset','nzbmatrixFieldset','nzbsorgFieldset','newznabFieldset','subtitleFieldset', 'xbmcFieldset', 'nmjFieldset', 'plexFieldset', 'prowlFieldset', 'growlFieldset', 'notifoFieldset', 'boxcarFieldset', 'nmaFieldset', 'twitterFieldset', 'synoIndexFieldset'],function(item){
+		Array.each(['renamingFieldset','torrentsFieldset','nzbsFieldset','nzbmatrixFieldset','nzbsorgFieldset','newznabFieldset','subtitleFieldset', 'xbmcFieldset', 'nmjFieldset', 'plexFieldset', 'prowlFieldset', 'growlFieldset', 'notifoFieldset', 'boxcarFieldset', 'nmaFieldset', 'twitterFieldset', 'synoIndexFieldset', 'traktNotificationFieldset'],function(item){
 		    var fieldset = $(item)
 		    var checkbox = fieldset.getElement('[type=checkbox]')
 		    isEnabled(checkbox, fieldset)
@@ -1289,6 +1330,14 @@
 			new Request({
 				'url': './testTwitter/',
 				'data': $('twitterFieldset')
+			}).send()
+		})
+		
+		$('traktTest').addEvent('click', function(e){
+			(e).stop()
+			new Request({
+				'url': './testTrakt/',
+				'data': $('traktFieldset')
 			}).send()
 		})
 	});

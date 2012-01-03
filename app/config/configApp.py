@@ -86,6 +86,8 @@ class configApp():
         self.setDefault('NZBsRUS', 'userhash', '')
         self.addSection('x264')
         self.setDefault('x264', 'enabled', False)
+        self.addSection('mysterbin')
+        self.setDefault('mysterbin', 'enabled', False)
 
         self.addSection('NZB')
         self.setDefault('NZB', 'enabled', True)
@@ -163,11 +165,14 @@ class configApp():
         self.setDefault('KinepolisRSS', 'minvotes', '900')
 
         self.addSection('Trakt')
-        self.setDefault('Trakt', 'enabled', False)
+        self.setDefault('Trakt', 'watchlist_enabled', False)
+        self.setDefault('Trakt', 'notification_enabled', False)
+        self.setDefault('Trakt', 'watchlist_remove', False)
+        self.setDefault('Trakt', 'dontaddcollection', True)
         self.setDefault('Trakt', 'apikey', '')
         self.setDefault('Trakt', 'username', '')
         self.setDefault('Trakt', 'password', '')
-        
+
         self.addSection('XBMC')
         self.setDefault('XBMC', 'enabled', False)
         self.setDefault('XBMC', 'onSnatch', False)
@@ -176,6 +181,7 @@ class configApp():
         self.setDefault('XBMC', 'password', 'xbmc')
         self.setDefault('XBMC', 'dbpath', '')
         self.setDefault('XBMC', 'updateOneOnly', False)
+        self.setDefault('XBMC', 'useWebAPIExistingCheck', False)
 
         self.addSection('NMJ')
         self.setDefault('NMJ', 'enabled', False)
@@ -209,7 +215,6 @@ class configApp():
         self.setDefault('Boxcar', 'enabled', False)
         self.setDefault('Boxcar', 'onSnatch', False)
         self.setDefault('Boxcar', 'username', '')
-        self.setDefault('Boxcar', 'password', '')
 
         self.addSection('NMA')
         self.setDefault('NMA', 'enabled', False)
@@ -230,6 +235,7 @@ class configApp():
 
         self.addSection('Meta')
         self.setDefault('Meta', 'enabled', False)
+        self.setDefault('Meta', 'urlOnly', False)
         self.setDefault('Meta', 'fanartMinHeight', 0)
         self.setDefault('Meta', 'fanartMinWidth', 0)
         self.setDefault('Meta', 'posterMinHeight', 0)

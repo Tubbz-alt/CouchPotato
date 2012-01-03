@@ -20,6 +20,7 @@ from app.lib.boxcar import Boxcar
 from app.lib.nma import NMA
 from app.lib.twitter import Twitter
 from app.lib.synoindex import Synoindex
+from app.lib.trakt import Trakt
 from xmg import xmg
 import cherrypy
 import os
@@ -133,7 +134,8 @@ class RenamerCron(cronBase, Library):
                                                                posterFileNaming,
                                                                add_tags = {'orig_ext': posterOrigExt})
 
-                        x.write_nfo(nfo_location)
+                        urlOnly = self.config.get('Meta', 'urlOnly')
+                        x.write_nfo(nfo_location, url = urlOnly, xml = not urlOnly)
 
                         x.write_fanart(fanart_filename,
                                        finalDestination['directory'],
@@ -200,6 +202,11 @@ class RenamerCron(cronBase, Library):
                 log.debug('Synoindex')
                 synoindex = Synoindex()
                 synoindex.addToLibrary(finalDestination['directory'])
+
+                # Notify Trakt
+                log.debug('Trakt')
+                trakt = Trakt()
+                trakt.notify(movie['movie'].name, movie['movie'].year, movie['movie'].imdb)
 
             else:
                 path = movie['path'].split(os.sep)
