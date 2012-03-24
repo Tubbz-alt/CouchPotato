@@ -2,6 +2,7 @@ from app.config.cplog import CPLog
 from app.lib.provider.yarr.base import torrentBase
 from imdb.parser.http.bsouplxml._bsoup import SoupStrainer, BeautifulSoup
 from urllib import quote_plus
+from urllib2 import URLError
 import time
 import urllib
 import urllib2
@@ -12,7 +13,7 @@ class x264(torrentBase):
     """Provider for #alt.binaries.hdtv.x264 @ EFnet"""
 
     name = 'x264'
-    searchUrl = 'http://85.214.105.230/x264/requests.php?release=%s&status=FILLED&age=700&sort=ID'
+    searchUrl = 'http://85.214.105.230/x264/requests.php?release=%s&status=FILLED&age=1300&sort=ID'
     downloadUrl = 'http://85.214.105.230/get_nzb.php?id=%s&section=hd'
 
     def __init__(self, config):
@@ -34,7 +35,12 @@ class x264(torrentBase):
 
         url = self.searchUrl % quote_plus(self.toSearchString(movie.name + ' ' + quality))
         log.info('Searching: %s' % url)
-        data = urllib.urlopen(url)
+
+        try:
+            data = urllib2.urlopen(url, timeout = self.timeout).read()
+        except (IOError, URLError):
+            log.error('Failed to open %s.' % url)
+            return results
 
         try:
             tables = SoupStrainer('table')
@@ -61,7 +67,7 @@ class x264(torrentBase):
 
         except AttributeError:
             log.debug('No search results found.')
-        
+
         return results
 
     def makeIgnoreString(self, type):

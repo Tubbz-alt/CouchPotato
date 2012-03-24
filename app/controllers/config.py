@@ -10,6 +10,7 @@ from app.lib.growl import GROWL
 from app.lib.notifo import Notifo
 from app.lib.boxcar import Boxcar
 from app.lib.nma import NMA
+from app.lib.nmwp import NMWP
 from app.lib.twitter import Twitter
 from app.lib.trakt import Trakt
 import cherrypy
@@ -63,7 +64,7 @@ class ConfigController(BaseController):
         bools = filter(lambda s: not data.get(s),
             [
               'global.launchbrowser', 'global.updater',
-              'XBMC.enabled', 'XBMC.onSnatch',
+              'XBMC.enabled', 'XBMC.onSnatch', 'XBMC.useWebAPIExistingCheck',
               'NMJ.enabled',
               'PLEX.enabled',
               'PROWL.enabled', 'PROWL.onSnatch',
@@ -71,6 +72,7 @@ class ConfigController(BaseController):
               'Notifo.enabled', 'Notifo.onSnatch',
               'Boxcar.enabled', 'Boxcar.onSnatch',
               'NMA.enable', 'NMA.onSnatch',
+              'NMWP.enable', 'NMWP.onSnatch',
               'Twitter.enabled', 'Twitter.onSnatch',
               'Trakt.notification_enabled',
               'Trakt.watchlist_remove',
@@ -90,6 +92,7 @@ class ConfigController(BaseController):
               'Subtitles.enabled', 'Subtitles.addLanguage',
               'MovieRSS.enabled',
               'KinepolisRSS.enabled',
+              'IMDBWatchlist.enabled',
             ]
         )
         data.update(data.fromkeys(bools, False))
@@ -190,6 +193,13 @@ class ConfigController(BaseController):
         nma.test(data.get('NMA.apikey'), data.get('NMA.devkey'), data.get('NMA.priority'))
         return ''
 
+    @cherrypy.expose
+    def testNMWP(self, **data):
+        
+        nmwp = NMWP()
+        nmwp.test(data.get('NMWP.apikey'), data.get('NMWP.devkey'), data.get('NMWP.priority'))
+        return ''
+        
     @cherrypy.expose
     def testTwitter(self, **data):
 

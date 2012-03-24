@@ -274,6 +274,18 @@
 						<span><strong>cdNr</strong>: 1</span>
 					</p>
 				</div>
+				<div class="ctrlHolder checkbox">
+					<label>Post-Processing Script</label>
+					<input type="checkbox" name="Renamer.script_enabled" value="True" ${' checked="checked"' if config.get('Renamer', 'script_enabled') else ''} />
+				</div>
+				<div class="ctrlHolder">
+					<label>File Path</label>
+					<input type="text" name="Renamer.file_path" value="${config.get('Renamer','file_path')}" class="textInput large"/>
+					<p class="formHint">
+						Relative file path to your extra script (starting from CouchPotato install folder)
+					</p>
+				</div>
+			</fieldset>
 			</fieldset>
 			<fieldset class="inlineLabels">
 				<div class="ctrlHolder">
@@ -409,7 +421,7 @@
 				</div>
 			</fieldset>
 
-            		<fieldset class="inlineLabels">
+           	<fieldset class="inlineLabels">
 				<h3>#alt.binaries.hdtv.x264@EFnet</h3>
 				<div class="ctrlHolder checkbox">
 					<label>Enable</label>
@@ -722,12 +734,48 @@
 						Thumbnail, poster and .nfo file.
 					</p>
 				</div>
+				<div class="ctrlHolder checkbox">
+					<label>Save URL Only</label>
+					<input type="checkbox" name="Meta.urlonly" value="True" ${' checked="checked"' if config.get('Meta', 'urlonly') else ''} />
+					<p class="formHint">Save only the IMBD Url in the nfo file
+					</p>
+				</div>
+                <div class="ctrlHolder checkbox">
+                    <label>Fanart Filename</label>
+                    <input type="text" name="Meta.fanartfilename" value="${config.get('Meta','fanartfilename')}" class="textInput large"/>
+                </div>
+                <div class="ctrlHolder checkbox">
+                    <label>Poster Filename</label>
+                    <input type="text" name="Meta.posterfilename" value="${config.get('Meta','posterfilename')}" class="textInput large"/>
+                </div>
+                <div class="ctrlHolder checkbox">
+                    <label>NFO Filename</label>
+                    <input type="text" name="Meta.nfofilename" value="${config.get('Meta','nfofilename')}" class="textInput large"/>
+                </div>
 			</fieldset>
 			<fieldset class="inlineLabels">
 				<h3>MovieETA</h3>
 				<div class="ctrlHolder checkbox">
 					<label>Check VideoETA</label>
 					<input type="checkbox" name="MovieETA.enabled" value="True" ${' checked="checked"' if config.get('MovieETA', 'enabled') else ''} />
+				</div>
+				
+			</fieldset>
+			<fieldset class="inlineLabels">
+				<h3>IMDB Watchlists</h3>
+				<div class="ctrlHolder checkbox">
+					<label>Enable</label>
+					<input type="checkbox" name="IMDBWatchlist.enabled" value="True" ${' checked="checked"' if config.get('IMDBWatchlist', 'enabled') else ''} />
+					<p class="formHint">
+						This will magically add movies to your wanted list that appear in public IMDB Watchlist(s) specified below.
+					</p>
+				</div>
+				<div class="ctrlHolder">
+					<label>IMDB Watchlist URL(s)</label>
+                    <textarea name="IMDBWatchlist.url" cols="50" rows="5" class="textInput large">${config.get('IMDBWatchlist', 'url')}</textarea>
+					<p class="formHint">
+						Comma separated list of 'Export this list' links from the public IMDB Watchlist pages
+					</p>
 				</div>
 			</fieldset>
 		</div>
@@ -1003,6 +1051,43 @@
 					<option value="0"${' selected="selected"' if config.get('NMA', 'priority') == '0' else ''}>Normal</option>
 					<option value="1"${' selected="selected"' if config.get('NMA', 'priority') == '1' else ''}>High</option>
 					<option value="2"${' selected="selected"' if config.get('NMA', 'priority') == '2' else ''}>Emergency</option>
+					</select>
+				</div>
+			</fieldset>
+			<fieldset class="inlineLabels" id="nmwpFieldset">
+				<h3>NotifyMyWindowsPhone</h3>
+				<div class="ctrlHolder checkbox">
+					<label>Enabled</label>
+					<input type="checkbox" name="NMWP.enabled" value="True" ${' checked="checked"' if config.get('NMWP', 'enabled') else ''} />
+					<p class="formHint">
+						Sends a notification to <a href="https://NotifyMyWindowsPhone.com">NotifyMyWindowsPhone.com</a>
+					</p>
+				</div>
+				<div class="ctrlHolder checkbox">
+					<label>Also on snatched</label>
+					<input type="checkbox" name="NMWP.onSnatch" value="True" ${' checked="checked"' if config.get('NMWP', 'onSnatch') else ''} />
+					<p class="formHint">
+						Also send a notification when a movie is snatched.
+					</p>
+				</div>
+				<div class="ctrlHolder">
+					<label>API Key</label>
+					<input type="text" name="NMWP.apikey" value="${config.get('NMWP', 'apikey')}" class="textInput large" />
+					<p class="formHint">
+					Multiple keys must be seperated by a , (comma). Up to a maximum of 5
+					</p>
+				</div>
+				<div class="ctrlHolder">
+					<a href="#nmwpTest" id="nmwpTest" class="testNotification">Send a message to NotifyMyWindowsPhone, see if it works.</a>
+				</div>
+				<div class="ctrlHolder">
+					<label>Priority</label>
+					<select name="NMWP.priority" class="textInput large">
+					<option value="-2"${' selected="selected"' if config.get('NMWP', 'priority') == '-2' else ''}>Very Low</option>
+					<option value="-1"${' selected="selected"' if config.get('NMWP', 'priority') == '-1' else ''}>Moderate</option>
+					<option value="0"${' selected="selected"' if config.get('NMWP', 'priority') == '0' else ''}>Normal</option>
+					<option value="1"${' selected="selected"' if config.get('NMWP', 'priority') == '1' else ''}>High</option>
+					<option value="2"${' selected="selected"' if config.get('NMWP', 'priority') == '2' else ''}>Emergency</option>
 					</select>
 				</div>
 			</fieldset>
@@ -1323,6 +1408,13 @@
 			new Request({
 				'url': './testNMA/',
 				'data': $('nmaFieldset')
+			}).send()
+		})
+		$('nmwpTest').addEvent('click',function(e){
+			(e).stop()
+			new Request({
+				'url': './testNMWP/',
+				'data': $('nmwpFieldset')
 			}).send()
 		})
         $('twitterTest').addEvent('click',function(e){

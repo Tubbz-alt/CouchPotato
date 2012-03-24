@@ -58,6 +58,8 @@ class configApp():
         self.setDefault('Renamer', 'fileNaming', '<thename><cd>.<ext>')
         self.setDefault('Renamer', 'separator', ' ')
         self.setDefault('Renamer', 'cleanup', False)
+        self.setDefault('Renamer', 'script_enabled', False)
+        self.setDefault('Renamer', 'file_path', '')
 
         self.addSection('Trailer')
         self.setDefault('Trailer', 'quality', False)
@@ -173,6 +175,10 @@ class configApp():
         self.setDefault('Trakt', 'username', '')
         self.setDefault('Trakt', 'password', '')
 
+        self.addSection('IMDBWatchlist')
+        self.setDefault('IMDBWatchlist', 'enabled', False)
+        self.setDefault('IMDBWatchlist', 'url', '')
+
         self.addSection('XBMC')
         self.setDefault('XBMC', 'enabled', False)
         self.setDefault('XBMC', 'onSnatch', False)
@@ -223,6 +229,13 @@ class configApp():
         self.setDefault('NMA', 'devkey', '')
         self.setDefault('NMA', 'priority', '0')
 
+        self.addSection('NMWP')
+        self.setDefault('NMWP', 'enabled', False)
+        self.setDefault('NMWP', 'onSnatch', False)
+        self.setDefault('NMWP', 'apikey', '')
+        self.setDefault('NMWP', 'devkey', '')
+        self.setDefault('NMWP', 'priority', '0')
+
         self.addSection('Twitter')
         self.setDefault('Twitter', 'enabled', False)
         self.setDefault('Twitter', 'onSnatch', False)
@@ -243,7 +256,7 @@ class configApp():
         self.setDefault('Meta', 'fanartFileName', 'fanart.<orig_ext>')
         self.setDefault('Meta', 'posterFileName', 'movie.tbn')
         self.setDefault('Meta', 'nfoFileName', 'movie.nfo')
-
+        
         self.save()
 
     def save(self):

@@ -2,10 +2,11 @@ from app.config.cplog import CPLog
 from app.lib.provider.yarr.base import torrentBase
 from imdb.parser.http.bsouplxml._bsoup import SoupStrainer, BeautifulSoup
 from urllib import quote_plus
+from urllib2 import URLError
+import re
 import time
 import urllib
 import urllib2
-import re 
 
 log = CPLog(__name__)
 
@@ -26,7 +27,7 @@ class mysterbin(torrentBase):
 
     def enabled(self):
         return self.conf('enabled') and self.config.get('NZB', 'enabled')
-    
+
     def find(self, movie, quality, type):
 
         results = []
@@ -35,8 +36,13 @@ class mysterbin(torrentBase):
 
         url = self.searchUrl % quote_plus(self.toSearchString(movie.name + ' ' + quality))
         log.info('Searching: %s' % url)
-        data = urllib.urlopen(url)
-  
+
+        try:
+            data = urllib2.urlopen(url, timeout = self.timeout).read()
+        except (IOError, URLError):
+            log.error('Failed to open %s.' % url)
+            return results
+
         try:
             tables = SoupStrainer('table')
             html = BeautifulSoup(data, parseOnlyThese = tables)
@@ -44,11 +50,11 @@ class mysterbin(torrentBase):
             for result in resultable.findAll('span', attrs = {'class':'cname'}):
                 new = self.feedItem()
                 a = result.find('a')
-                id  = re.search('(?<=detail\?c\=)\w+', a['href'])
+                id = re.search('(?<=detail\?c\=)\w+', a['href'])
                 new.id = id.group(0)
-                text = a.findAll(text=True)
+                text = a.findAll(text = True)
                 words = ''
-                for text in a.findAll(text=True):
+                for text in a.findAll(text = True):
                     words = words + unicode(text).encode('utf-8')
                 new.name = words
                 new.size = 9999
@@ -79,8 +85,8 @@ class mysterbin(torrentBase):
         except IOError:
             log.error('Failed to open %s.' % url)
             return ''
-        
+
         return ''
- 
+
 
 
